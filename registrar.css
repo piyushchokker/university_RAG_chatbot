@@ -1,0 +1,555 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/krmu_kchat_bg.jpg');
+    background-size: 150% auto;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Header Styles */
+.registrar-header {
+    background: linear-gradient(135deg, #0032a0 0%, #0048c8 30%, #c80000 100%);
+    color: white;
+    padding: 15px 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    position: relative;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.university-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: white;
+    padding: 3px;
+}
+
+.logo-text h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+}
+
+.header-subtitle {
+    font-size: 12px;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.user-dept {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, #0032a0 0%, #0048c8 100%);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 50, 160, 0.3);
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #0048c8 0%, #0032a0 100%);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 50, 160, 0.4);
+}
+
+/* Main Container */
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 25px;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+/* Section Styles */
+.upload-section,
+.documents-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.section-header h2 {
+    color: #0032a0;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.section-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Form Styles */
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0032a0;
+}
+
+.required {
+    color: #c80000;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 16px;
+    font-size: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: white;
+    color: #333;
+    font-family: inherit;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group select {
+    overflow-x: auto;
+    overflow-y: visible;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%230032a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.form-group select::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.form-group select::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.form-group select::-webkit-scrollbar-thumb {
+    background: #0032a0;
+    border-radius: 3px;
+}
+
+.form-group select::-webkit-scrollbar-thumb:hover {
+    background: #0048c8;
+}
+
+.form-group select option {
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 8px 12px;
+    min-height: 44px;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #0032a0;
+    box-shadow: 0 0 0 3px rgba(0, 50, 160, 0.1);
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* File Upload */
+.file-upload-group {
+    margin-top: 10px;
+}
+
+.file-upload-wrapper {
+    position: relative;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-upload-display {
+    padding: 12px 16px;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 48px;
+    transition: all 0.3s ease;
+}
+
+.file-upload-wrapper:hover .file-upload-display {
+    border-color: #0032a0;
+    background: #f0f4ff;
+}
+
+.file-placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.file-name {
+    color: #333;
+    font-weight: 500;
+}
+
+.file-size {
+    color: #666;
+    font-size: 13px;
+}
+
+.file-hint {
+    color: #666;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* Submit Button */
+.submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #0032a0 0%, #0048c8 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 50, 160, 0.3);
+    margin-top: 10px;
+}
+
+.submit-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 50, 160, 0.4);
+}
+
+.submit-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Documents List */
+.documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.documents-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.documents-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.documents-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state svg {
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.empty-state small {
+    font-size: 14px;
+    color: #999;
+}
+
+.document-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.document-card:hover {
+    background: #f0f4ff;
+    border-color: #0032a0;
+    box-shadow: 0 2px 8px rgba(0, 50, 160, 0.1);
+}
+
+.document-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0032a0 0%, #0048c8 100%);
+    color: white;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.document-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.document-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.document-meta {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.document-meta span {
+    margin: 0 5px;
+}
+
+.document-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.document-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.delete-btn {
+    color: #c80000;
+}
+
+.delete-btn:hover {
+    background: #ffe6e6;
+    transform: scale(1.1);
+}
+
+/* Custom Select Dropdown Styling */
+.form-group select {
+    max-width: 100%;
+}
+
+.form-group select:focus {
+    overflow-x: auto;
+}
+
+/* Ensure select dropdown doesn't break layout */
+select {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Custom scrollbar for select dropdowns */
+select::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+select::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb {
+    background: #0032a0;
+    border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background: #0048c8;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .main-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-wrap: wrap;
+    }
+
+    .logo-text h1 {
+        font-size: 16px;
+    }
+
+    .user-badge {
+        display: none;
+    }
+
+    .main-container {
+        padding: 20px 15px;
+    }
+
+    .upload-section,
+    .documents-section {
+        padding: 20px;
+    }
+}
