@@ -10,8 +10,14 @@ from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 import os
 from queue import Queue
+import json
+from datetime import datetime
 
 files_queue=Queue()
+
+# Add a status tracking dictionary
+file_status = {}
+STATUS_FILE = "file_processing_status.json"
 
 load_dotenv()
 
@@ -29,6 +35,21 @@ vectorstore = PGVector(
     use_jsonb=True
 )
 
+def save_status():
+    """Save file processing status to JSON file"""
+    with open(STATUS_FILE, 'w') as f:
+        json.dump(file_status, f, indent=2)
+
+def update_file_status(filename, status, chunks_count=0):
+    """Update the status of a file"""
+    file_status[filename] = {
+        "status": status,  # "processing", "completed", "failed"
+        "chunks_count": chunks_count,
+        "timestamp": datetime.now().isoformat()
+    }
+    save_status()
+    print(f"Status updated: {filename} - {status}")
+
 
 
 class MyHandler(PatternMatchingEventHandler):
@@ -39,6 +60,9 @@ class MyHandler(PatternMatchingEventHandler):
 
         file_path = Path(event.src_path)
         print(f"New file detected: {file_path.name}")
+        
+        # Update status to processing
+        update_file_status(file_path.name, "processing")
 
         time.sleep(2)
         files_queue.put(file_path)
@@ -89,22 +113,32 @@ def main():
         try:
             if not files_queue.empty() :
                 item=files_queue.get()
+                filename = item.name
+                
+                try:
+                    print(f"Processing file: {filename}")
+                    
+                    elements=partition_pdf(item,strategy="hi_res")
 
-                elements=partition_pdf(item,strategy="hi_res")
+                    chunks=chunk_by_title(
+                        elements=elements,
+                        max_characters=3000,
+                        new_after_n_chars=2400,
+                        combine_text_under_n_chars=500
+                    )
 
-                chunks=chunk_by_title(
-                    elements=elements,
-                    max_characters=3000,
-                    new_after_n_chars=2400,
-                    combine_text_under_n_chars=500
-                )
+                    docs=text_extractor(chunks=chunks)
 
-                docs=text_extractor(chunks=chunks)
+                    vectorstore.add_documents(docs)      
 
-                vectorstore.add_documents(docs)      
-
-                print(f"created {len(chunks)} chunks")
-
+                    print(f"Created {len(chunks)} chunks for {filename}")
+                    
+                    # Update status to completed
+                    update_file_status(filename, "completed", len(chunks))
+                    
+                except Exception as e:
+                    print(f"Error processing {filename}: {str(e)}")
+                    update_file_status(filename, "failed")
 
             
             time.sleep(1)

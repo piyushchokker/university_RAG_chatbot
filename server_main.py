@@ -2,7 +2,8 @@ from langchain_postgres import PGVector
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 import os
-from fastapi import FastAPI
+import json
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_openai import ChatOpenAI
 from langchain.messages import HumanMessage
@@ -69,4 +70,16 @@ def qa(query):
     # Print the answer
     print(type(response.content))
     return response.content
+
+
+@app.get("/api/file-status")
+async def get_file_status():
+    """Get the processing status of all files"""
+    try:
+        with open("file_processing_status.json", 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 

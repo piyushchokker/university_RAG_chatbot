@@ -553,3 +553,99 @@ select::-webkit-scrollbar-thumb:hover {
         padding: 20px;
     }
 }
+
+/* File Status Section Styles */
+.file-status-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.status-container {
+    margin-top: 15px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin: 8px 0;
+    background: white;
+    border-radius: 6px;
+    border-left: 4px solid #ccc;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.status-item:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transform: translateX(2px);
+}
+
+.status-item.status-processing {
+    border-left-color: #ffa500;
+    background: #fff8e6;
+}
+
+.status-item.status-completed {
+    border-left-color: #28a745;
+    background: #e6ffe6;
+}
+
+.status-item.status-failed {
+    border-left-color: #dc3545;
+    background: #ffe6e6;
+}
+
+.status-icon {
+    font-size: 24px;
+    margin-right: 12px;
+    min-width: 30px;
+    text-align: center;
+}
+
+.status-filename {
+    flex: 1;
+    font-weight: 600;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-text {
+    color: #666;
+    margin-right: 12px;
+    font-size: 14px;
+}
+
+.status-time {
+    font-size: 12px;
+    color: #999;
+    min-width: 80px;
+    text-align: right;
+}
+
+.no-files {
+    text-align: center;
+    color: #999;
+    padding: 30px;
+    font-style: italic;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.status-item.status-processing .status-icon {
+    animation: pulse 2s ease-in-out infinite;
+}

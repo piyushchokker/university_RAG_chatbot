@@ -96,7 +96,9 @@ async function sendMessage() {
         if (response.ok) {
             const botMessage = await response.text();
             // Remove surrounding quotes if present
-            const cleanMessage = botMessage.replace(/^["']|["']$/g, '');
+            let cleanMessage = botMessage.replace(/^["']|["']$/g, '');
+            // Convert \n to actual line breaks
+            cleanMessage = cleanMessage.replace(/\\n/g, '\n');
             addMessage('bot', cleanMessage);
         } else {
             addMessage('bot', 'Sorry, I encountered an error. Please try again.');
@@ -149,7 +151,8 @@ function addMessage(type, content) {
     
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
-    contentDiv.textContent = content;
+    // Convert newlines to <br> tags for proper formatting
+    contentDiv.innerHTML = content.replace(/\n/g, '<br>');
     
     const timeDiv = document.createElement('div');
     timeDiv.className = 'message-time';

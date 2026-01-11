@@ -445,3 +445,106 @@ function logout() {
         window.location.href = '/index.html';
     }
 }
+
+// File status monitoring
+let statusCheckInterval;
+let consecutiveEmptyChecks = 0;
+
+function startStatusMonitoring() {
+    // Check status every 5 seconds (reduced from 2)
+    statusCheckInterval = setInterval(checkFileStatus, 5000);
+    // Initial check
+    checkFileStatus();
+}
+
+function stopStatusMonitoring() {
+    if (statusCheckInterval) {
+        clearInterval(statusCheckInterval);
+    }
+}
+
+async function checkFileStatus() {
+    // Only check if page is visible
+    if (document.hidden) return;
+    
+    try {
+        const response = await fetch('http://127.0.0.1:5050/api/file-status');
+        if (response.ok) {
+            const statuses = await response.json();
+            updateStatusDisplay(statuses);
+            
+            // If no files for 3 consecutive checks, slow down polling
+            if (Object.keys(statuses).length === 0) {
+                consecutiveEmptyChecks++;
+                if (consecutiveEmptyChecks > 3) {
+                    // Stop polling after 3 empty checks
+                    stopStatusMonitoring();
+                    console.log('No files to monitor, stopped polling');
+                }
+            } else {
+                consecutiveEmptyChecks = 0;
+            }
+        }
+    } catch (error) {
+        console.error('Error checking file status:', error);
+    }
+}
+
+function updateStatusDisplay(statuses) {
+    const statusContainer = document.getElementById('fileStatusContainer');
+    if (!statusContainer) return;
+    
+    statusContainer.innerHTML = '';
+    
+    if (Object.keys(statuses).length === 0) {
+        statusContainer.innerHTML = '<p class="no-files">No files being processed</p>';
+        return;
+    }
+    
+    for (const [filename, status] of Object.entries(statuses)) {
+        const statusItem = document.createElement('div');
+        statusItem.className = `status-item status-${status.status}`;
+        
+        let statusIcon = '';
+        let statusText = '';
+        
+        if (status.status === 'processing') {
+            statusIcon = '⏳';
+            statusText = 'Processing...';
+        } else if (status.status === 'completed') {
+            statusIcon = '✅';
+            statusText = `Completed (${status.chunks_count} chunks)`;
+        } else if (status.status === 'failed') {
+            statusIcon = '❌';
+            statusText = 'Failed';
+        }
+        
+        statusItem.innerHTML = `
+            <span class="status-icon">${statusIcon}</span>
+            <span class="status-filename">${filename}</span>
+            <span class="status-text">${statusText}</span>
+            <span class="status-time">${new Date(status.timestamp).toLocaleTimeString()}</span>
+        `;
+        
+        statusContainer.appendChild(statusItem);
+    }
+}
+
+// Start monitoring when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    startStatusMonitoring();
+});
+
+// Restart monitoring when page becomes visible
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && !statusCheckInterval) {
+        console.log('Page visible, resuming status monitoring');
+        consecutiveEmptyChecks = 0;
+        startStatusMonitoring();
+    }
+});
+
+// Stop monitoring when page unloads
+window.addEventListener('beforeunload', function() {
+    stopStatusMonitoring();
+});
