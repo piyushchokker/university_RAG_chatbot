@@ -6,7 +6,8 @@ import json
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_openai import ChatOpenAI
-from langchain.messages import HumanMessage
+from langchain.messages import AIMessage, SystemMessage, HumanMessage
+
 
 load_dotenv()
 app=FastAPI()
@@ -28,22 +29,11 @@ embedding_model = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 CONNECTION_STRING = "postgresql+psycopg2://postgres:root@localhost:5432/universitydb"
 
 llm = ChatOpenAI(
-    model="gpt-5-nano",
-    # stream_usage=True,
-    # temperature=None,
-    # max_tokens=None,
-    # timeout=None,
-    # reasoning_effort="low",
-    # max_retries=2,
-    # api_key="...",  # If you prefer to pass api key in directly
-    # base_url="...",
-    # organization="...",
-    # other params...
+    model="gpt-5-nano"
 )
 
 
-
-
+db=[]
 
 
 @app.get("/response/{query}")
@@ -57,18 +47,24 @@ def qa(query):
     use_jsonb=True
     )
 
+
     docs = vectorstore.similarity_search(query,k=1)
 
     # Combine document contents into context
     context = "\n\n".join([doc.page_content for doc in docs])
 
-    prompt = f"""Based on the following context:{context}, answer the question:{query} and if you have no context for the query then answer that i dont have answer for that """
 
+    prompt = f"""Based on the following context:{context}, answer the question {query} and if you have no context for the query then answer that i dont have answer for that """ 
+
+    db.append(HumanMessage(prompt))
     # Invoke LLM and get response
-    response = llm.invoke(prompt)
+    response = llm.invoke(db)
 
     # Print the answer
     print(type(response.content))
+    
+    db.append(AIMessage(response.content))
+    
     return response.content
 
 
@@ -82,4 +78,3 @@ async def get_file_status():
         return {}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
